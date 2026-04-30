@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PhilCST — Philippine College of Science and Technology</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #6b21a8;
+      --purple-dark: #4a1770;
+      --purple-mid: #7c3aed;
+      --purple-light: #a855f7;
+      --purple-pale: #f3e8ff;
+      --purple-muted: #ede9fe;
+      --gold: #d4a017;
+      --gold-light: #f0c040;
+      --white: #ffffff;
+      --off-white: #ffffff;
+      --gray-100: #f5f3f7;
+      --gray-200: #e9e3f0;
+      --gray-400: #9d8db0;
+      --gray-600: #5a4d72;
+      --gray-800: #2d2440;
+      --text: #1e1530;
+      --font-head: 'Playfair Display', Georgia, serif;
+      --font-body: 'Source Sans 3', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      color: var(--text);
+      background: var(--white);
+      line-height: 1.6;
+    }
+
+    /* ── LOADING SCREEN (POOR SIGNAL) ── */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .signal-icon { display: flex; align-items: flex-end; gap: 4px; height: 40px; }
+    .bar { width: 8px; background: #e2e8f0; border-radius: 2px; }
+    .bar-anim { animation: signal 0.8s infinite alternate; }
+    @keyframes signal { 0% { background: #e2e8f0; } 100% { background: var(--purple); } }
+
+    /* ── HOVER SIDEBAR ── */
+    .sidebar-trigger {
+      position: fixed;
+      left: 0; top: 0; width: 25px; height: 150vh;
+      z-index: 2001;
+    }
+    .sidebar {
+      position: fixed;
+      left: -280px; top: 0; width: 280px; height: 100vh;
+      background: #fff;
+      box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+      transition: 0.4s ease;
+      z-index: 1000;
+      border-right: 5px solid var(--gold);
+      padding: 40px 20px;
+    }
+    .sidebar-trigger:hover + .sidebar, .sidebar:hover { left: 0; }
+
+    /* ── HEADER ── */
+    header {
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      border-bottom: 3px solid transparent;
+      border-image: linear-gradient(90deg, var(--purple-dark), var(--purple), var(--gold)) 1;
+    }
+    .logo-main { height: 75px; }
+    .logo-wuri { height: 55px; }
+
+    /* ── HERO CONTENT ── */
+    .hero {
+      display: flex;
+      flex-wrap: wrap; /* Para hindi mag-compress pag niliit browser */
+      align-items: center;
+      padding: 60px 8%;
+      gap: 40px;
+    }
+    .text-box { flex: 1; min-width: 320px; }
+    .text-box h1 { 
+      font-family: var(--font-heading); 
+      font-size: clamp(2.5rem, 5vw, 3.5rem); 
+      color: var(--purple);
+      margin-bottom: 20px;
+    }
+    .img-box { flex: 1; min-width: 320px; }
+    .img-box img { width: 100%; border-radius: 12px; box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+
+    /* ── FOOTER LOGOS (PLACEMENTS) ── */
+    .footer-logos {
+      padding: 50px 20px;
+      text-align: center;
+      background: #f8f9fa;
+    }
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 35px;
+      margin-top: 25px;
+    }
+    .grid img { height: 55px; object-fit: contain; }
+
+
+
+    
+
+
+    /* ── NAVBAR ──────────────────────────────────────────── */
+    #navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: linear-gradient(135deg, #1e0840 0%, #3a0d65 35%, #4a1770 70%, #5a1890 100%);
+      box-shadow: 0 2px 24px rgba(30,8,64,0.55), 0 1px 0 rgba(212,160,23,0.15);
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      height: 60px;
+      gap: 0;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .nav-logo img {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      filter: brightness(1.1);
+    }
+    .nav-logo-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-logo-name {
+      font-family: var(--font-head);
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.1;
+      letter-spacing: 0.5px;
+    }
+    .nav-logo-sub {
+      font-size: 9.5px;
+      color: rgba(255,255,255,0.65);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-family: var(--font-body);
+      font-weight: 400;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      margin-left: 32px;
+      gap: 2px;
+      flex: 1;
+    }
+    .nav-links a {
+      display: block;
+      padding: 8px 14px;
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 6px;
+      transition: all 0.18s;
+      white-space: nowrap;
+    }
+    .nav-links a:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.12);
+    }
+    .nav-links .has-dropdown {
+      position: relative;
+    }
+    .nav-links .has-dropdown > a::after {
+      content: ' ▾';
+      font-size: 10px;
+      opacity: 0.7;
+    }
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      background: var(--purple-dark);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      min-width: 200px;
+      padding: 6px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+    .has-dropdown:hover .dropdown { display: block; }
+    .dropdown a {
+      border-radius: 5px;
+      font-size: 12.5px;
+    }
+    .nav-spacer { flex: 1; }
+
+    /* ── THE ATTENDANCE BUTTON ── */
+
+    .btn-attendance {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, var(--gold), #b8860b);
+      color: #1a0a00;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      border-radius: 8px;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 18px rgba(212,160,23,0.45);
+      transition: all 0.22s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .btn-attendance:hover {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      box-shadow: 0 6px 28px rgba(212,160,23,0.6);
+      transform: translateY(-2px);
+    }
+    .btn-attendance .icon { font-size: 15px; }
+
+    /* ── HERO ─────────────────────────────────────────────── */
+    #hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #faf7ff 0%, #f3e8ff 40%, #ede9fe 70%, #faf5ff 100%);
+      min-height: 72vh;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .hero-bg-pattern {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .hero-bg-pattern::before {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(107,33,168,0.10);
+      top: -200px; right: -150px;
+      animation: slowRotate 60s linear infinite;
+    }
+    .hero-bg-pattern::after {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      border: 1px solid rgba(107,33,168,0.07);
+      bottom: -100px; left: -100px;
+    }
+    .hero-glow {
+      position: absolute;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(168,85,247,0.12) 0%, rgba(107,33,168,0.05) 45%, transparent 70%);
+      top: -120px; right: -100px;
+      pointer-events: none;
+    }
+    .hero-glow2 {
+      position: absolute;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(212,160,23,0.07) 0%, transparent 70%);
+      bottom: -80px; left: 5%;
+      pointer-events: none;
+    }
+    @keyframes slowRotate { to { transform: rotate(360deg); } }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 24px;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 60px;
+      align-items: center;
+    }
+    .hero-text .tag {
+      display: inline-block;
+      background: var(--purple-muted);
+      color: var(--purple-dark);
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--gray-200);
+      margin-bottom: 22px;
+      font-weight: 600;
+    }
+    .hero-text h1 {
+      font-family: var(--font-head);
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 800;
+      color: var(--gray-800);
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .hero-text h1 span {
+      color: var(--purple);
+    }
+    .hero-text p {
+      font-size: 16px;
+      color: var(--gray-600);
+      max-width: 520px;
+      line-height: 1.8;
+      margin-bottom: 36px;
+    }
+    .hero-ctas {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .btn-hero-primary {
+      padding: 13px 28px;
+      background: var(--purple);
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(107,33,168,0.25);
+    }
+    .btn-hero-primary:hover {
+      background: var(--purple-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(107,33,168,0.35);
+    }
+    .btn-hero-secondary {
+      padding: 13px 28px;
+      background: transparent;
+      color: var(--purple);
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 8px;
+      border: 1.5px solid var(--purple);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-hero-secondary:hover {
+      background: var(--purple-muted);
+      border-color: var(--purple-dark);
+    }
+    .hero-card {
+     background: linear-gradient(135deg, #ece8f5 0%, #f3e8ff 40%, #ede9fe 70%, #faf5ff 100%);
+      border: 1px solid var(--gray-200);
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 8px 48px rgba(107,33,168,0.10);
+    }
+    .hero-card-logo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .hero-card-logo img {
+      width: 64px; height: 64px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 8px rgba(107,33,168,0.25));
+    }
+    .hero-card-logo-text h3 {
+      font-family: var(--font-head);
+      font-size: 20px;
+      color: var(--gray-800);
+      font-weight: 700;
+    }
+    .hero-card-logo-text p {
+      font-size: 11px;
+      color: var(--gray-400);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin: 0;
+    }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+    .hero-stat {
+      background: var(--purple-muted);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      border: 1px solid var(--gray-200);
+    }
+    .hero-stat .num {
+      font-family: var(--font-head);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--purple-dark);
+      display: block;
+    }
+    .hero-stat .lbl {
+      font-size: 10px;
+      color: var(--gray-600);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+    .hero-card-footer {
+      font-size: 11px;
+      color: var(--gray-400);
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    /* ── MARQUEE (partner logos) ─────────────────────────── */
+    .marquee-section {
+    background: linear-gradient(135deg, #ece8f5 0%, #f3e8ff 40%, #ede9fe 70%, #faf5ff 100%);
+      border-top: 1px solid var(--gray-200);
+      border-bottom: 1px solid var(--gray-200);
+      padding: 18px 0;
+      overflow: hidden;
+    }
+    .marquee-track {
+      display: flex;
+      gap: 60px;
+      animation: marquee 22s linear infinite;
+      width: max-content;
+    }
+    .marquee-track span {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-400);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ── SECTION BASE ─────────────────────────────────────── */
+    section { padding: 90px 24px; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-tag {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--purple-mid);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: var(--font-head);
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      color: var(--gray-800);
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 16px;
+      color: var(--gray-600);
+      max-width: 600px;
+      line-height: 1.7;
+    }
+
+    /* ── MISSION/VISION ───────────────────────────────────── */
+    #mission {
+      background: linear-gradient(135deg, #ede5ff 0%, #e6dcf2 40%, #ece8ff 70%, #faf5ff 100%);
+    }
+    .mv-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-top: 52px;
+    }
+    .mv-card {
+      background: linear-gradient(135deg, #f1ebff 0%, #ece5f1 40%, #e1deed 70%, #f5eefc 100%);
+      border-radius: 18px;
+      padding: 36px;
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    .mv-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--purple), var(--purple-light));
+    }
+    .mv-icon {
+      width: 52px; height: 52px;
+      background: var(--purple-muted);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: var(--purple-dark);
+    }
+    .mv-card h3 {
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--purple-dark);
+      margin-bottom: 14px;
+    }
+    .mv-card p {
+      font-size: 14.5px;
+      color: var(--gray-600);
+      line-height: 1.75;
+    }
+
+    /* ── HISTORY ──────────────────────────────────────────── */
+    #history {
+    background: linear-gradient(135deg, #f3effa 0%, #f3e8ff 40%, #ede9fe 70%, #faf5ff 100%);
+    }
+    .history-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: center;
+      margin-top: 52px;
+    }
+    .history-visual {
+      position: relative;
+    }
+    .history-img-box {
+      background: linear-gradient(160deg, var(--purple-muted) 0%, #e9d5ff 100%);
+      border-radius: 20px;
+      aspect-ratio: 4/3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 12px 48px rgba(107,33,168,0.15);
+      border: 1px solid var(--gray-200);
+    }
+    .history-img-box img {
+      width: 180px;
+      opacity: 1;
+      filter: drop-shadow(0 4px 20px rgba(107,33,168,0.3));
+    }
+    .history-year-badge {
+      position: absolute;
+      bottom: -16px; right: -16px;
+      background: var(--purple-dark);
+      color: #fff;
+      font-family: var(--font-head);
+      font-size: 36px;
+      font-weight: 800;
+      padding: 16px 24px;
+      border-radius: 14px;
+      box-shadow: 0 8px 28px rgba(74,23,112,0.35);
+    }
+    .history-text h3 {
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 16px;
+    }
+    .history-text p {
+      font-size: 14.5px;
+      color: var(--gray-600);
+      line-height: 1.8;
+      margin-bottom: 14px;
+    }
+
+    /* ── PROGRAMS ─────────────────────────────────────────── */
+    #programs {
+      background: linear-gradient(135deg, #ede5ff 0%, #e6dcf2 40%, #ece8ff 70%, #faf5ff 100%);
+    }
+    .programs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 52px;
+    }
+    .prog-card {
+      background: linear-gradient(135deg, #f1ebff 0%, #ece5f1 40%, #e1deed 70%, #f5eefc 100%);
+      border-radius: 16px;
+      padding: 28px;
+      border: 1px solid var(--gray-200);
+      transition: all 0.25s;
+      cursor: default;
+    }
+    .prog-card:hover {
+      border-color: var(--purple-light);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(107,33,168,0.12);
+    }
+    .prog-icon {
+      font-size: 32px;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .prog-icon-abbr {
+      display: inline-block;
+      background: var(--purple-muted);
+      color: var(--purple-dark);
+      font-family: var(--font-head);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      border: 1px solid var(--gray-200);
+    }
+    .prog-card h4 {
+      font-family: var(--font-head);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 8px;
+    }
+    .prog-card p {
+      font-size: 13.5px;
+      color: var(--gray-600);
+      line-height: 1.65;
+    }
+
+    /* ── VALUES STRIP ─────────────────────────────────────── */
+    #values {
+      background: linear-gradient(135deg, #1e0840 0%, #3a0d65 35%, #6b21a8 70%, #5a1890 100%);
+      padding: 70px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    #values::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 15% 50%, rgba(212,160,23,0.07) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 30%, rgba(90,24,160,0.4) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      margin-top: 48px;
+    }
+    .value-item {
+      text-align: center;
+    }
+    .value-num {
+      font-family: var(--font-head);
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--gold-light);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .value-label {
+      font-size: 13px;
+      color: rgba(255,255,255,0.75);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    #values .section-title { color: #fff; }
+    #values .section-tag { color: var(--gold-light); }
+    #values .section-sub { color: rgba(255,255,255,0.7); }
+
+    /* ── FOOTER ───────────────────────────────────────────── */
+    footer {
+      background: linear-gradient(160deg, #1a0d33 0%, #2d1854 50%, #1e1030 100%);
+      color: rgba(255,255,255,0.7);
+      padding: 56px 24px 28px;
+      border-top: 1px solid rgba(212,160,23,0.2);
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+    .footer-brand img {
+      width: 60px; height: 60px;
+      object-fit: contain;
+      margin-bottom: 12px;
+      filter: brightness(1.2);
+    }
+    .footer-brand h3 {
+      font-family: var(--font-head);
+      font-size: 20px;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .footer-brand p {
+      font-size: 13px;
+      line-height: 1.7;
+      max-width: 320px;
+    }
+    .footer-col h4 {
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .footer-col a {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: 13.5px;
+      transition: color 0.18s;
+    }
+    .footer-col a:hover { color: #fff; }
+    .footer-bottom {
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .footer-bottom .mis {
+      color: var(--gold-light);
+      font-weight: 600;
+    }
+
+    /* ── RESPONSIVE ───────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero-content { grid-template-columns: 1fr; }
+      .hero-card { display: none; }
+      .mv-grid, .history-layout { grid-template-columns: 1fr; }
+      .programs-grid { grid-template-columns: 1fr !important; }
+      .values-grid { grid-template-columns: repeat(4, 1fr) !important; }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 700px) {
+      .values-grid { grid-template-columns: repeat(4, 1fr) !important; }
+      .value-num { font-size: 32px; }
+    }
+    @media (max-width: 480px) {
+      .values-grid { grid-template-columns: repeat(4, 1fr) !important; }
+      .hero-ctas { flex-direction: column; }
+      .btn-attendance { font-size: 12px; padding: 9px 16px; }
+      .prog-card { padding: 18px; }
+      section { padding: 60px 16px; }
+      .hero-content { padding: 50px 16px; }
+    }
+
+    /* ── SCROLL ANIMATIONS ────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════ NAVBAR ═══════════════════════════════════════ -->
+ 
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAPoAAAD6AG1e1JrAAARZElEQVR42rVZCVRUV5o2PTOZOaenJ52t05nTnT5tMpPERM2MsZGlqIJiEXeTwV0WQcAqlqIWVASKrfYqdkFEoyhqXFBBogKuuCGKiCKKAooaXDCaGA1Q9ep989+CMupoTCdn3jm36tWrd+/77r9+//+GDPkVh1qt/g37DhydvC3cOwdzPbVckKcOIZ4ahAgyuQjvLEwbs3jnwL34zZD/3wMv0cdLz/jDee2fI0QZlxICCiDzNdvjfS2Q+9AQW+wJ/vkIF6Vffu+19/7tqTlPr/PSr0XpWAQENjAw8B+ekOaQAWkKP575gVSc2RvvY0KsWM/HiQ0YGHqwaxIvDQJGzRr++JwnNcIE4Ry/RK2Di4pHT3l9zDC/1xwqHgDrWDBiVMQ/se9pLsrP431zCJjJHkfAnhhiJuFcBLrFTX98DltjU+Amx8ZHjpz8e9cRU//wrI38bJDCt4VvBAvTGkOE6e0TPl4gdNoaG84HBbkmpi0aW4Q4X5ONgSP1w/lNw5YwrgBzhQl6x1yh+h8DaZ7TticOjxkT5p12IViUfNb7rxPfekwYLz4Chwzc+Ml7Hm+GCtKPLSI7U/nl2iU+Jm6mizLL7f1Jv2P/jx0V9O5sl9hFUk/tjRixBVKRjo/xNkIq1CFGpEe0lwFRggw+1suIaE/dzTkecvVnny4Yyub6vuX725muSq3EV29V+GfzCWMLEOqd1jR62Lg//kywAzsdMdT3D8HCJfVKchC5t8kmExs4ma+FYwuGCVKagtwTVi0Qab5P8MtDvJ/ZrvrchMTAfKTOKII5ZjlMkuVIDymCLmIZEqdlId7byMf5ZCGS5sx1TSgLE6SecjpfrLeRixWbbcpxS8nxUk6RIP79RWbgsL1RpO4Qz7Rjcloo1sds+9Hm2MOMnNIvF0qfHCjH50AWoOWKl5Tx20oqUZxcBs38EtRu2osVhjX4wrQRtRv3oyyvHOtzquy6iBW2pM/z+VhxLlRjs3kZmUqsmK1pYs9BtNhkUwYsZZI94Tp0wGafFQ0cF4b9acxrocL0k6qAXJpMC/maEEND5mMkGyQVeunpusWunp3LbcjbxifPy8by1A1YbShH8vQCJEzMgiaiGBkhxdAR6AJFKXIWrkZlaTXK6J7CpFK+OHkDF+WRYY/1MoGFMgY0hsIZA0sOaVOR1kK8UppHfyB+/bHw+CTQv7wy8vfzhZoLcv9sCjVGhxczkHIKN8z+EiZlwUBq3bC0HDu+2AlLXAlJ1YiFAXS/hxYS93TM+1sSwl2WIMIlBTHumZBRmJKNNyBzQTE25++ASbqCzKIYiwNzIfE0QMEAMkE4ooTBrvDLRoRX+uVhw8a89kypOg148kdSf6m3iZf5mCgmmpi6aefZWOClQ0HCKnrYdixLKkPqXGZjRoS76TDXJYWLnmy2JoUXcuaFq/tNC9dYk8IK7bFTjP2hrslcpFsmYoR6krgJyTOzySQOY41lI62RhygPzWCkYGAtfLSPAdNHhU/+SacKHAw5c9wTLcyRCCgXRzuWeGmRFpwLi2IllmdshmKcEZEeOgS5pvAZ0SXcweoGrru7m6cD3z64jwc/PASd4taNHvuRvadsmril9mCPJXaJkBICmVLinGzsXr8f63I3IS0kH+RQJHkTxxwsVJCY93NS7oBDvTrqlRBR8jkFeXW0WGc3SkqQt7AUK9I3I258FiLctXzUhEz7/p0Nds7GwXlcu3odx+ubaDTi5s1b7BLPPux2Dof2NXILJmk4KW0wRqhFKgEsX16JEvWXWCBIt6v8cxEqTGkd/o7Hqz+Rbh9PawM7CXZLqIz1NkMdUsRtKKpEmXkL5CTJCHqQbIa+/3L7NQcIG9dLQHi0t19B24UOx7m134Zz59pw/Vo3SdYOq/WHgY1cucHLZxh4qUBLkcMEzZwCLJ5mxlLVGk41LotMKKnycbLzTEmyuBU4LPBl9mPS8HnvR3mmP0yckocsRTG/TL0G6ln5DnVLJmq4K+1XB0H2w2a1ofXcReypOWLfueOQrWLrgf7t5bW9B/ae6q2qOPh9R/s1Am/nrdb+QbA3eekUHRcjMvGxwnRoI5dhrWkLb4woQZinum/qp1EfO8xwmPrlwbg+IFma+0jEj9Kim1Kt9Kc4OU7DLU9bhzzFWsgo0wR5pPB7djU4dM1xVvT19aL+aDPazl/DpfNX+eKCDbwmZWVf6pKl9xMVhff2Vp/+7uL5bpxoOMPbbFawwY7De05wIWTfLGHM81bwaVINX0RhS+ZrILCLUx73lycwDn116Cu+H37uMvUTafj00XEFCzw1d5gqDJJiPikkDwlTchHhpkV6XJHVbreBs/c6nGVP7RGsXV2Fml312FlxGDu2HsS2zXuwdfMefnfVUWwv34fdX9Wj9IsKHD54kkygz2EqZLXQxZfY51P4ivbJhDl+GYrT1vFJgXmIEGTcmummMv2PS/wMrw8nfkTR3aHlIdNGJ+2MEKVel3ilc4zpLAwopDBBmSNAi+3LKlG+dBcSAswIcknl91efGPQcHrdv30bF1jrsrT7L761pxL7dTaipOoV91U2o3X2K3/3VCRza34LaXY3Ys/sMqrYfwuXOLqd/4eiB09ZgdzUn87bAIF2JVcYvkRScB6mXkVeNK6TUnA2JKMMaIUpvn+6WuG1IpDAHCf55LOBS6KCUSaktWqTnF1P+rttWR6lxPcW6NCyYZOm/fv0G71Q7R/bZfqkLNbsb+Mud19Ha0oba6mPkQF+TKVxGVcUB9PR8g+NHzxLwo7jTcxcPHjyEM0r03Lpjl041smdBMcmAyi9qka0qhUSopfRqthJF5OKJHyjH5iPKOxtD5rlr6YLZHuMzkHdZ8GUMKJV2V7FqJzShxYgckwF1ZBHHwzYgT35AKvfvP0BDfSuBuIOrV6/hGNnrnW9uO84P7KvHwx++x5nTbTjZ0PJo3uBUpn5eE7vCFuGugXyCARUrdmKttpyA6gYTgHkg4RBxmSfQ2YaEumshpz9iB9MYu2mBpxZ5yjJsKa6EkvJ3lLsOKVGF1vaODv5i2yVcutiOjvZONJ48i7r9TRSKztH5Gezfc4LOW3G66Rx2VR3E+daLqDvQyCTKtbW185cudoCNC23t6CIz0MaWfBvuqrPLyLQ2F1QiR7WcUrWBgRwYYuK0fhbMozrsGUBNJFE9LNFfYG3ul4ifZEKkux5JEUU/kF3yN7pvobu7h2z0G3RcJMntacSpk804fuy0A+jNG7fR2X4dNTvrCMx1HKlros002G/fvMt3d9/BjRs9uEHfPXfuIjOu5H6Yi96unGTGKsMmFKvLIPe3MJ4xmPtNPwINcdc4VO/8k0lUQhLNjV+JPZsPQk35OJLy+cK5+Q8ffteHvl4bfnhopaBuR8/N73FwbzMutHai+XQ79tacQEfHNbQ0d5K3H8b1rh4cq2tB/eFmkEnTvIG5/b0cHtzv5ReFFNqi3AxQTjFhHSWUrJiSQYmanBIdVL2WGzJflIUEMliZD6NcZsaYbLHeBl7OmJKiGAWqNYgTmRHuo3l4vrGr/9u7vbjZ/S3Z5X1c7ezBYfLsxuOtOHroHEn0NFrOdNDvNuyqPIwLLVcdGzl68Ay+u/sQt27ec8y9d6cXF1uu28J8NX0xnkRUZi3FspRSLPmcNOttcGCQkTMRJp45UyRzpkCXxbVhwrQuqRfZColZGZDHeCIfT1Sv1LgFq/Qb6bcJQaPTbZsKD/Tf67ESwG9w/co9nDx2EVXbjhDYsxSWGlFRfhCnGjoJWCu2fFmDxvoO7KqoR2V5HdrOXcPVjm9o3MNdWmPr6kN9QWNSbDGUSFJDi7Axvwp5cWsQLTJQeCqg8JRFoSqTp/DUMd118S5H+nz/dbffTRwZ/tE016gZMzzkxiih/jbtyBGEt1AslROfZOkzflp+78WWu3wXPbDh8GUcqG3G2VNX0NzYgdMn2nHq+EW0NF3BmVOdaGq4hDONl9FE18/Q/4f3t9KcLlxpv4PO83d5xey8XnJaPkasxfKU9dhYUMGrploQ6am/PctDnj1ttGT2+BFzPh4xYsRv/08KZVUi+w5xV6bJxXlQE7/cQgwnMTCHanQLZo1Oti0z7e37uotss6YF5WWN2L/7PGq/oiD/1RnsoVFT1ewYzvPanSTt3a3Y/mUTDtZeILv9Hitz9/XOckmxMYavnJhDrGwTitTruMWTlyLYRaV9bgp1khJn3T1h1MwPooQZD5STclC1uprPW7gWEnI2ItOYJUjrr1jXxF1ovon91S002kiyLThQ00rj/FNj8Fp1K913npysB5WbmuyzPdJtrPRgDqyYYEGZcRuvm78MYR7p/VP/Fj1ykDS/rH6clDyXPI9RlicQMVk02czF+GsRQ4vK/UyI9tbzQaIM2+bVDbazTTdw4kgnjtddRsOhqzSu4QQbh685zhsOdeH4oQ7HPezeLWXHbXMpLUrJs+P9HAUjWGZSjc3iEibnY7bHohfSvCeI85tvDvvXeYKU0yrqgMSIjPZ44qXxrFKkBxBQMAeY4ZZu1S/ZyR2o7iQgX6P+YBeO7OvEob0dRJI7cGT/ZdTXddF/3airuQpLaoVtpiDFGk25PIbWiB4MQzImWW+jndVp4cK0cyP/Ivz9C4mzU5pz3VUGVUD+QCniyypQw4BEJxmRHryUFtcimuxrtmsaP39Cdr8xpcK6ac1JW/X2C1xtVTtf81U7dm87b9+8+qTdlLzDFjHRYp3pkmyP8WaJRY/MkEKoplgcYGU+hoF6SWzkVFQuz/FINj9to89sIU5xifCQ+OisFPj5wVreUYlKvTXQhxVSgUclsKwUMsogMi8LVZ4GPsQ11U622xfmb7JKJufzC6bk8+H+Zm6Oe7ot2EXNRwqIaFAUkY81oIBKmi2FO6CfX+hooMUzQTirUF8TH0VdwKmfyH2fZwKPVB4mzjyr8M8idegfa3oZHRKNH2cmRr4ca80V0EYUQR+1AtRUQLyY3cPaOqwqzcB8Kp2jBDqSkgXxtCHVZ2aY4lZinWUr1lu2Qx2aD6mvbjCnGx4BZSW6nJhchMjQNvyVZ9dOjh+ssAoRqU+zbMDaLLGDXYxHC5GqJKJ0LnFGri1HsZov1VNC0GxG0ZL10Mwr4VNmF0AbtgIZwdSECC6AWUpF4aJSsPvKKHlk0xzlZAMX7aXl4sSPd/4GSIijteNPrR3PtPOs9/WsBsSjCy5/9X5rnldaE7OXGJZOfczOBRkN5BTUjpETwY7zsvBLpuVxOslyfkVmOXIXriKmvhwrqZzeVLADZZYtKNVtxIqUDcgIX8YvmpZPALNobh5xzByHTcYNUksHSJ+BLkm4IP2s4F2/Pz8H5JPtRsEH/m+HeyZTa6eQqZyaWHo75V2OpbYQUWbLXLdFGyVi7QMFqUlGRVq0UIOEydlQjCdVU+dkEWWYhMlZVP9bHGwsRmThFT4FkIp1fUFuieVhotQmJUuT1HiLpe5ILHMkAjlfoG5xHzrhnZ/VK3W2HUe94/92qFfqSSWBlfvl2KN99NwcV3mRxzvjHbYz/pOQ/5grkCcTI7/FygYWX1nbJ5ZUysIXO6dBbN3RZbk9Z4xCN3F00EeObiG1HWe4qyxSpiH/bLuSNhwuyDgrfG/qn/6+Hungja7UfpwnTGtmpOWz/w7xd+6UeaMzfMz2WKxVOeosk+2JbrOvwwltLMzNESwyO1M0m+vsHUz6L4lnGDWJwwRpbYJ3p//57wL5tBm4fDzxLeGoCW88FtueaI1Pd40LZEyH0bJHzPyRcxjsMspugZ8q5j7dGnduVPifM98QDgv848/NSM/NVAAbz3/ZMO6jKR9KvTR9Mh/WATQ54uWPw0Jq1yJgeMgLXzbgl75seBQLXvz65l/ChZntClJxLHWfGadlI87XYlcGsNc3GV1DqZf1069vfiXIF25ikH4FjknaHinOohdhmVwoRQDH8GQvxCyYTsT8aar2S47/BdagyJib9NNTAAAAAElFTkSuQmCC" alt="PhilCST Logo" />
+      <div class="nav-logo-text">
+        <span class="nav-logo-name">PhilCST</span>
+        <span class="nav-logo-sub">Calasiao, Pangasinan</span>
+      </div>
+    </a>
+
+    <ul class="nav-links">
+      <li class="has-dropdown">
+        <a href="#">About</a>
+        <div class="dropdown">
+          <a href="#">About PhilCST</a>
+          <a href="#">PhilCST Founder</a>
+          <a href="#">Executive Officers</a>
+          <a href="#">Administrators</a>
+          <a href="#">Colleges</a>
+          <a href="#">Alumni</a>
+          <a href="#">Recognition & Awards</a>
+        </div>
+      </li>
+      <li class="has-dropdown">
+        <a href="#">Academics</a>
+        <div class="dropdown">
+          <a href="#">Programs Offered</a>
+          <a href="#">Short Courses</a>
+          <a href="#">Senior High School</a>
+          <a href="#">Junior High School</a>
+          <a href="#">Grade School</a>
+        </div>
+      </li>
+      <li class="has-dropdown">
+        <a href="#">Campus Life</a>
+        <div class="dropdown">
+          <a href="#">Student Activities</a>
+          <a href="#">Student Councils</a>
+          <a href="#">Student Affairs</a>
+          <a href="#">Student Services</a>
+          <a href="#">Career Services</a>
+        </div>
+      </li>
+      <li><a href="#">Research</a></li>
+      <li class="has-dropdown">
+        <a href="#">Student Portal</a>
+        <div class="dropdown">
+          <a href="https://lms.philcst.edu.ph" target="_blank">LMS</a>
+          <a href="https://osgvs.philcst.edu.ph" target="_blank">Grades Viewing</a>
+          <a href="https://opac-philcst.online" target="_blank">OPAC</a>
+        </div>
+      </li>
+    </ul>
+
+    <div class="nav-spacer"></div>
+
+    <!-- ATTENDANCE BUTTON -->
+    <a href="http://philcstweb.free.nf" class="btn-attendance"
+       onclick="sessionStorage.setItem('philcst_from_landing','1')">
+      Attendance System
+    </a>
+  </div>
+</nav>
+
+<!-- ═══════════ HERO ══════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-bg-pattern"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-content">
+    <div class="hero-text">
+      <span class="tag">Est. 1994 · Calasiao, Pangasinan</span>
+      <h1>Your Future<br /><span>Starts Here!</span></h1>
+      <p>Philippine College of Science and Technology — a premier institution committed to producing graduates who are globally competitive, values-driven, and equipped to drive progress in science, technology, and beyond.</p>
+      <div class="hero-ctas">
+        <a href="#programs" class="btn-hero-primary">Explore Programs</a>
+        <a href="#history" class="btn-hero-secondary">Our Story</a>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-card-logo">
+        <img src="data:image/png;base64,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" alt="PhilCST Logo" />
+        <div class="hero-card-logo-text">
+          <h3>PhilCST</h3>
+          <p>Philippine College of<br>Science & Technology</p>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><span class="num">30+</span><span class="lbl">Years of Excellence</span></div>
+        <div class="hero-stat"><span class="num">12k+</span><span class="lbl">Alumni Nationwide</span></div>
+        <div class="hero-stat"><span class="num">20+</span><span class="lbl">Programs Offered</span></div>
+        <div class="hero-stat"><span class="num">A</span><span class="lbl">CHED Accredited</span></div>
+      </div>
+      <div class="hero-card-footer">Calasiao, Pangasinan · philcst.edu.ph</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ MARQUEE ════════════════════════════════════════ -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <span>CHED Recognized</span><span>·</span>
+    <span>TESDA Accredited</span><span>·</span>
+    <span>SOCOTEC Certified</span><span>·</span>
+    <span>DepEd Affiliated</span><span>·</span>
+    <span>MARINA Partner</span><span>·</span>
+    <span>WURI Ranked</span><span>·</span>
+    <span>CHED Recognized</span><span>·</span>
+    <span>TESDA Accredited</span><span>·</span>
+    <span>SOCOTEC Certified</span><span>·</span>
+    <span>DepEd Affiliated</span><span>·</span>
+    <span>MARINA Partner</span><span>·</span>
+    <span>WURI Ranked</span><span>·</span>
+  </div>
+</div>
+
+<!-- ═══════════ MISSION & VISION ══════════════════════════════ -->
+<section id="mission" style="position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+    <div style="position:absolute;width:700px;height:700px;border-radius:50%;border:1.5px solid rgba(107,33,168,0.10);top:-200px;right:-150px;animation:slowRotate 60s linear infinite;"></div>
+    <div style="position:absolute;width:500px;height:500px;border-radius:50%;border:1px solid rgba(107,33,168,0.07);bottom:-100px;left:-100px;"></div>
+    <div style="position:absolute;width:350px;height:350px;border-radius:50%;border:1px solid rgba(107,33,168,0.06);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+    <div style="position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(168,85,247,0.10) 0%,rgba(107,33,168,0.04) 45%,transparent 70%);top:-120px;right:-100px;"></div>
+    <div style="position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(212,160,23,0.06) 0%,transparent 70%);bottom:-80px;left:5%;"></div>
+  </div>
+  <div class="section-inner" style="position:relative;z-index:1;">
+    <span class="section-tag reveal">Our Foundation</span>
+    <h2 class="section-title reveal">Mission &amp; Vision</h2>
+    <p class="section-sub reveal">The guiding principles that shape everything we do at PhilCST.</p>
+    <div class="mv-grid">
+      <div class="mv-card reveal">
+        <div class="mv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="24" height="24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+        <h3>Mission</h3>
+        <p>PhilCST provides quality education to students who are imbued with strong moral character through a well-balanced research and community oriented learning environment that develops critical thinking for maximum development of an individual's talents and capabilities.</p>
+      </div>
+      <div class="mv-card reveal">
+        <div class="mv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="24" height="24"><path d="M2 12h6m14 0h-6m-4-8v6m0 4v6"/><circle cx="12" cy="12" r="4"/><path d="M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div>
+        <h3>Vision</h3>
+        <p>PhilCST envisions to produce graduates fully equipped with knowledge, values, and skills, and who are globally competitive in their profession ever ready to render quality services to society and the nation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ HISTORY ════════════════════════════════════════ -->
+<section id="history" style="position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+    <div style="position:absolute;width:600px;height:600px;border-radius:50%;border:1.5px solid rgba(107,33,168,0.10);top:-150px;left:-150px;animation:slowRotate 70s linear infinite reverse;"></div>
+    <div style="position:absolute;width:450px;height:450px;border-radius:50%;border:1px solid rgba(107,33,168,0.07);bottom:-80px;right:-80px;"></div>
+    <div style="position:absolute;width:300px;height:300px;border-radius:50%;border:1px solid rgba(107,33,168,0.06);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+    <div style="position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(168,85,247,0.09) 0%,rgba(107,33,168,0.03) 45%,transparent 70%);bottom:-200px;left:-100px;"></div>
+    <div style="position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(212,160,23,0.06) 0%,transparent 70%);top:-80px;right:5%;"></div>
+  </div>
+  <div class="section-inner" style="position:relative;z-index:1;">
+    <div class="history-layout">
+      <div class="history-visual reveal">
+        <div class="history-img-box">
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAACXBIWXMAAAPoAAAD6AG1e1JrAAARZElEQVR42rVZCVRUV5o2PTOZOaenJ52t05nTnT5tMpPERM2MsZGlqIJiEXeTwV0WQcAqlqIWVASKrfYqdkFEoyhqXFBBogKuuCGKiCKKAooaXDCaGA1Q9ep989+CMupoTCdn3jm36tWrd+/77r9+//+GDPkVh1qt/g37DhydvC3cOwdzPbVckKcOIZ4ahAgyuQjvLEwbs3jnwL34zZD/3wMv0cdLz/jDee2fI0QZlxICCiDzNdvjfS2Q+9AQW+wJ/vkIF6Vffu+19/7tqTlPr/PSr0XpWAQENjAw8B+ekOaQAWkKP575gVSc2RvvY0KsWM/HiQ0YGHqwaxIvDQJGzRr++JwnNcIE4Ry/RK2Di4pHT3l9zDC/1xwqHgDrWDBiVMQ/se9pLsrP431zCJjJHkfAnhhiJuFcBLrFTX98DltjU+Amx8ZHjpz8e9cRU//wrI38bJDCt4VvBAvTGkOE6e0TPl4gdNoaG84HBbkmpi0aW4Q4X5ONgSP1w/lNw5YwrgBzhQl6x1yh+h8DaZ7TticOjxkT5p12IViUfNb7rxPfekwYLz4Chwzc+Ml7Hm+GCtKPLSI7U/nl2iU+Jm6mizLL7f1Jv2P/jx0V9O5sl9hFUk/tjRixBVKRjo/xNkIq1CFGpEe0lwFRggw+1suIaE/dzTkecvVnny4Yyub6vuX725muSq3EV29V+GfzCWMLEOqd1jR62Lg//kywAzsdMdT3D8HCJfVKchC5t8kmExs4ma+FYwuGCVKagtwTVi0Qab5P8MtDvJ/ZrvrchMTAfKTOKII5ZjlMkuVIDymCLmIZEqdlId7byMf5ZCGS5sx1TSgLE6SecjpfrLeRixWbbcpxS8nxUk6RIP79RWbgsL1RpO4Qz7Rjcloo1sds+9Hm2MOMnNIvF0qfHCjH50AWoOWKl5Tx20oqUZxcBs38EtRu2osVhjX4wrQRtRv3oyyvHOtzquy6iBW2pM/z+VhxLlRjs3kZmUqsmK1pYs9BtNhkUwYsZZI94Tp0wGafFQ0cF4b9acxrocL0k6qAXJpMC/maEEND5mMkGyQVeunpusWunp3LbcjbxifPy8by1A1YbShH8vQCJEzMgiaiGBkhxdAR6AJFKXIWrkZlaTXK6J7CpFK+OHkDF+WRYY/1MoGFMgY0hsIZA0sOaVOR1kK8UppHfyB+/bHw+CTQv7wy8vfzhZoLcv9sCjVGhxczkHIKN8z+EiZlwUBq3bC0HDu+2AlLXAlJ1YiFAXS/hxYS93TM+1sSwl2WIMIlBTHumZBRmJKNNyBzQTE25++ASbqCzKIYiwNzIfE0QMEAMkE4ooTBrvDLRoRX+uVhw8a89kypOg148kdSf6m3iZf5mCgmmpi6aefZWOClQ0HCKnrYdixLKkPqXGZjRoS76TDXJYWLnmy2JoUXcuaFq/tNC9dYk8IK7bFTjP2hrslcpFsmYoR6krgJyTOzySQOY41lI62RhygPzWCkYGAtfLSPAdNHhU/+SacKHAw5c9wTLcyRCCgXRzuWeGmRFpwLi2IllmdshmKcEZEeOgS5pvAZ0SXcweoGrru7m6cD3z64jwc/PASd4taNHvuRvadsmril9mCPJXaJkBICmVLinGzsXr8f63I3IS0kH+RQJHkTxxwsVJCY93NS7oBDvTrqlRBR8jkFeXW0WGc3SkqQt7AUK9I3I258FiLctXzUhEz7/p0Nds7GwXlcu3odx+ubaDTi5s1b7BLPPux2Dof2NXILJmk4KW0wRqhFKgEsX16JEvWXWCBIt6v8cxEqTGkd/o7Hqz+Rbh9PawM7CXZLqIz1NkMdUsRtKKpEmXkL5CTJCHqQbIa+/3L7NQcIG9dLQHi0t19B24UOx7m134Zz59pw/Vo3SdYOq/WHgY1cucHLZxh4qUBLkcMEzZwCLJ5mxlLVGk41LotMKKnycbLzTEmyuBU4LPBl9mPS8HnvR3mmP0yckocsRTG/TL0G6ln5DnVLJmq4K+1XB0H2w2a1ofXcReypOWLfueOQrWLrgf7t5bW9B/ae6q2qOPh9R/s1Am/nrdb+QbA3eekUHRcjMvGxwnRoI5dhrWkLb4woQZinum/qp1EfO8xwmPrlwbg+IFma+0jEj9Kim1Kt9Kc4OU7DLU9bhzzFWsgo0wR5pPB7djU4dM1xVvT19aL+aDPazl/DpfNX+eKCDbwmZWVf6pKl9xMVhff2Vp/+7uL5bpxoOMPbbFawwY7De05wIWTfLGHM81bwaVINX0RhS+ZrILCLUx73lycwDn116Cu+H37uMvUTafj00XEFCzw1d5gqDJJiPikkDwlTchHhpkV6XJHVbreBs/c6nGVP7RGsXV2Fml312FlxGDu2HsS2zXuwdfMefnfVUWwv34fdX9Wj9IsKHD54kkygz2EqZLXQxZfY51P4ivbJhDl+GYrT1vFJgXmIEGTcmummMv2PS/wMrw8nfkTR3aHlIdNGJ+2MEKVel3ilc4zpLAwopDBBmSNAi+3LKlG+dBcSAswIcknl91efGPQcHrdv30bF1jrsrT7L761pxL7dTaipOoV91U2o3X2K3/3VCRza34LaXY3Ys/sMqrYfwuXOLqd/4eiB09ZgdzUn87bAIF2JVcYvkRScB6mXkVeNK6TUnA2JKMMaIUpvn+6WuG1IpDAHCf55LOBS6KCUSaktWqTnF1P+rttWR6lxPcW6NCyYZOm/fv0G71Q7R/bZfqkLNbsb+Mud19Ha0oba6mPkQF+TKVxGVcUB9PR8g+NHzxLwo7jTcxcPHjyEM0r03Lpjl041smdBMcmAyi9qka0qhUSopfRqthJF5OKJHyjH5iPKOxtD5rlr6YLZHuMzkHdZ8GUMKJV2V7FqJzShxYgckwF1ZBHHwzYgT35AKvfvP0BDfSuBuIOrV6/hGNnrnW9uO84P7KvHwx++x5nTbTjZ0PJo3uBUpn5eE7vCFuGugXyCARUrdmKttpyA6gYTgHkg4RBxmSfQ2YaEumshpz9iB9MYu2mBpxZ5yjJsKa6EkvJ3lLsOKVGF1vaODv5i2yVcutiOjvZONJ48i7r9TRSKztH5Gezfc4LOW3G66Rx2VR3E+daLqDvQyCTKtbW185cudoCNC23t6CIz0MaWfBvuqrPLyLQ2F1QiR7WcUrWBgRwYYuK0fhbMozrsGUBNJFE9LNFfYG3ul4ifZEKkux5JEUU/kF3yN7pvobu7h2z0G3RcJMntacSpk804fuy0A+jNG7fR2X4dNTvrCMx1HKlros002G/fvMt3d9/BjRs9uEHfPXfuIjOu5H6Yi96unGTGKsMmFKvLIPe3MJ4xmPtNPwINcdc4VO/8k0lUQhLNjV+JPZsPQk35OJLy+cK5+Q8ffteHvl4bfnhopaBuR8/N73FwbzMutHai+XQ79tacQEfHNbQ0d5K3H8b1rh4cq2tB/eFmkEnTvIG5/b0cHtzv5ReFFNqi3AxQTjFhHSWUrJiSQYmanBIdVL2WGzJflIUEMliZD6NcZsaYbLHeBl7OmJKiGAWqNYgTmRHuo3l4vrGr/9u7vbjZ/S3Z5X1c7ezBYfLsxuOtOHroHEn0NFrOdNDvNuyqPIwLLVcdGzl68Ay+u/sQt27ec8y9d6cXF1uu28J8NX0xnkRUZi3FspRSLPmcNOttcGCQkTMRJp45UyRzpkCXxbVhwrQuqRfZColZGZDHeCIfT1Sv1LgFq/Qb6bcJQaPTbZsKD/Tf67ESwG9w/co9nDx2EVXbjhDYsxSWGlFRfhCnGjoJWCu2fFmDxvoO7KqoR2V5HdrOXcPVjm9o3MNdWmPr6kN9QWNSbDGUSFJDi7Axvwp5cWsQLTJQeCqg8JRFoSqTp/DUMd118S5H+nz/dbffTRwZ/tE016gZMzzkxiih/jbtyBGEt1AslROfZOkzflp+78WWu3wXPbDh8GUcqG3G2VNX0NzYgdMn2nHq+EW0NF3BmVOdaGq4hDONl9FE18/Q/4f3t9KcLlxpv4PO83d5xey8XnJaPkasxfKU9dhYUMGrploQ6am/PctDnj1ttGT2+BFzPh4xYsRv/08KZVUi+w5xV6bJxXlQE7/cQgwnMTCHanQLZo1Oti0z7e37uotss6YF5WWN2L/7PGq/oiD/1RnsoVFT1ewYzvPanSTt3a3Y/mUTDtZeILv9Hitz9/XOckmxMYavnJhDrGwTitTruMWTlyLYRaV9bgp1khJn3T1h1MwPooQZD5STclC1uprPW7gWEnI2ItOYJUjrr1jXxF1ovon91S002kiyLThQ00rj/FNj8Fp1K913npysB5WbmuyzPdJtrPRgDqyYYEGZcRuvm78MYR7p/VP/Fj1ykDS/rH6clDyXPI9RlicQMVk02czF+GsRQ4vK/UyI9tbzQaIM2+bVDbazTTdw4kgnjtddRsOhqzSu4QQbh685zhsOdeH4oQ7HPezeLWXHbXMpLUrJs+P9HAUjWGZSjc3iEibnY7bHohfSvCeI85tvDvvXeYKU0yrqgMSIjPZ44qXxrFKkBxBQMAeY4ZZu1S/ZyR2o7iQgX6P+YBeO7OvEob0dRJI7cGT/ZdTXddF/3airuQpLaoVtpiDFGk25PIbWiB4MQzImWW+jndVp4cK0cyP/Ivz9C4mzU5pz3VUGVUD+QCniyypQw4BEJxmRHryUFtcimuxrtmsaP39Cdr8xpcK6ac1JW/X2C1xtVTtf81U7dm87b9+8+qTdlLzDFjHRYp3pkmyP8WaJRY/MkEKoplgcYGU+hoF6SWzkVFQuz/FINj9to89sIU5xifCQ+OisFPj5wVreUYlKvTXQhxVSgUclsKwUMsogMi8LVZ4GPsQ11U622xfmb7JKJufzC6bk8+H+Zm6Oe7ot2EXNRwqIaFAUkY81oIBKmi2FO6CfX+hooMUzQTirUF8TH0VdwKmfyH2fZwKPVB4mzjyr8M8idegfa3oZHRKNH2cmRr4ca80V0EYUQR+1AtRUQLyY3cPaOqwqzcB8Kp2jBDqSkgXxtCHVZ2aY4lZinWUr1lu2Qx2aD6mvbjCnGx4BZSW6nJhchMjQNvyVZ9dOjh+ssAoRqU+zbMDaLLGDXYxHC5GqJKJ0LnFGri1HsZov1VNC0GxG0ZL10Mwr4VNmF0AbtgIZwdSECC6AWUpF4aJSsPvKKHlk0xzlZAMX7aXl4sSPd/4GSIijteNPrR3PtPOs9/WsBsSjCy5/9X5rnldaE7OXGJZOfczOBRkN5BTUjpETwY7zsvBLpuVxOslyfkVmOXIXriKmvhwrqZzeVLADZZYtKNVtxIqUDcgIX8YvmpZPALNobh5xzByHTcYNUksHSJ+BLkm4IP2s4F2/Pz8H5JPtRsEH/m+HeyZTa6eQqZyaWHo75V2OpbYQUWbLXLdFGyVi7QMFqUlGRVq0UIOEydlQjCdVU+dkEWWYhMlZVP9bHGwsRmThFT4FkIp1fUFuieVhotQmJUuT1HiLpe5ILHMkAjlfoG5xHzrhnZ/VK3W2HUe94/92qFfqSSWBlfvl2KN99NwcV3mRxzvjHbYz/pOQ/5grkCcTI7/FygYWX1nbJ5ZUysIXO6dBbN3RZbk9Z4xCN3F00EeObiG1HWe4qyxSpiH/bLuSNhwuyDgrfG/qn/6+Hungja7UfpwnTGtmpOWz/w7xd+6UeaMzfMz2WKxVOeosk+2JbrOvwwltLMzNESwyO1M0m+vsHUz6L4lnGDWJwwRpbYJ3p//57wL5tBm4fDzxLeGoCW88FtueaI1Pd40LZEyH0bJHzPyRcxjsMspugZ8q5j7dGnduVPifM98QDgv848/NSM/NVAAbz3/ZMO6jKR9KvTR9Mh/WATQ54uWPw0Jq1yJgeMgLXzbgl75seBQLXvz65l/ChZntClJxLHWfGadlI87XYlcGsNc3GV1DqZf1069vfiXIF25ikH4FjknaHinOohdhmVwoRQDH8GQvxCyYTsT8aar2S47/BdagyJib9NNTAAAAAElFTkSuQmCC" alt="PhilCST" />
+        </div>
+        <div class="history-year-badge">1994</div>
+      </div>
+      <div class="history-text">
+        <span class="section-tag reveal">Brief History</span>
+        <h2 class="section-title reveal">A Tradition of Excellence Continues</h2>
+        <p class="reveal">On July 16, 1990, a powerful earthquake devastated Dagupan City, damaging leading educational institutions. These circumstances led Mrs. Lourdes S. Fernandez — inspired by the national vision of "Philippines 2000" — to establish a school outside the city to serve students and professionals.</p>
+        <p class="reveal">In 1993, the Founder built a four-storey building in Nalsian, Calasiao, Pangasinan — the <strong>Philippine College of Science and Technology (PhilCST)</strong> — the first college institution in the municipality, just 5 kilometers from Dagupan City.</p>
+        <p class="reveal">On June 4, 1995, PhilCST formally began operations, offering degree and non-degree courses anchored on recognizing every human being as a potential agent of positive change.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PROGRAMS ═══════════════════════════════════════ -->
+<section id="programs" style="position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+    <div style="position:absolute;width:700px;height:700px;border-radius:50%;border:1.5px solid rgba(107,33,168,0.08);top:-250px;right:-200px;animation:slowRotate 80s linear infinite;"></div>
+    <div style="position:absolute;width:500px;height:500px;border-radius:50%;border:1px solid rgba(107,33,168,0.06);bottom:-120px;left:-120px;"></div>
+    <div style="position:absolute;width:400px;height:400px;border-radius:50%;border:1px solid rgba(107,33,168,0.05);top:40%;right:15%;"></div>
+    <div style="position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(168,85,247,0.08) 0%,transparent 70%);top:-100px;right:-80px;"></div>
+    <div style="position:absolute;width:350px;height:350px;background:radial-gradient(circle,rgba(212,160,23,0.05) 0%,transparent 70%);bottom:-60px;left:10%;"></div>
+  </div>
+  <div class="section-inner" style="position:relative;z-index:1;">
+    <span class="section-tag reveal">Academics</span>
+    <h2 class="section-title reveal">Programs Offered</h2>
+    <p class="section-sub reveal">Choose from a wide range of degree and non-degree courses designed to equip you with the skills for today's world.</p>
+    <div class="programs-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;">
+
+      <!-- Engineering & Architecture -->
+      <div class="prog-card reveal" style="border-top:3px solid #fb923c;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="width:36px;height:36px;background:rgba(251,146,60,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M5.34 18.66l-1.41 1.41M20 12h-2M6 12H4M17.66 17.66l-1.41-1.41M6.75 6.75 5.34 5.34M12 20v-2M12 6V4"/></svg>
+          </div>
+          <span class="prog-icon-abbr" style="background:rgba(251,146,60,0.1);color:#fb923c;border-color:rgba(251,146,60,0.3);">CEA</span>
+        </div>
+        <h4>College of Engineering &amp; Architecture</h4>
+        <div style="display:flex;flex-direction:column;gap:3px;margin-top:8px;">
+          <p style="font-size:12px;margin:0;padding:3px 0;border-bottom:1px solid var(--gray-200);">BS Electronics Engineering</p>
+          <p style="font-size:12px;margin:0;padding:3px 0;border-bottom:1px solid var(--gray-200);">BS Electrical Engineering</p>
+          <p style="font-size:12px;margin:0;padding:3px 0;border-bottom:1px solid var(--gray-200);">BS Mechanical Engineering</p>
+          <p style="font-size:12px;margin:0;padding:3px 0;border-bottom:1px solid var(--gray-200);">BS Civil Engineering</p>
+          <p style="font-size:12px;margin:0;padding:3px 0;">BS Computer Engineering</p>
+        </div>
+      </div>
+
+      <!-- Maritime Studies -->
+      <div class="prog-card reveal" style="border-top:3px solid #60a5fa;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="width:36px;height:36px;background:rgba(96,165,250,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l3-6 3 3 3-7 3 4 3-2"/><path d="M2 20h20"/></svg>
+          </div>
+          <span class="prog-icon-abbr" style="background:rgba(96,165,250,0.1);color:#60a5fa;border-color:rgba(96,165,250,0.3);">CMS</span>
+        </div>
+        <h4>College of Maritime Studies</h4>
+        <div style="display:flex;flex-direction:column;gap:3px;margin-top:8px;">
+          <p style="font-size:12px;margin:0;padding:3px 0;border-bottom:1px solid var(--gray-200);">BS Marine Engineering</p>
+          <p style="font-size:12px;margin:0;padding:3px 0;">BS Marine Transportation</p>
+        </div>
+      </div>
+
+      <!-- Education & Journalism -->
+      <div class="prog-card reveal" style="border-top:3px solid var(--purple);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="width:36px;height:36px;background:rgba(107,33,168,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <span class="prog-icon-abbr" style="background:rgba(107,33,168,0.1);color:var(--purple);border-color:rgba(107,33,168,0.3);">CEJ</span>
+        </div>
+        <h4>College of Education &amp; Journalism</h4>
+        <div style="display:flex;flex-direction:column;gap:3px;margin-top:8px;">
+          <p style="font-size:12px;margin:0;padding:3px 0;border-bottom:1px solid var(--gray-200);">BS Secondary Education</p>
+          <p style="font-size:12px;margin:0;padding:3px 0;border-bottom:1px solid var(--gray-200);">BS Elementary Education</p>
+          <p style="font-size:12px;margin:0;padding:3px 0;border-bottom:1px solid var(--gray-200);">BS in General Science</p>
+          <p style="font-size:12px;margin:0;padding:3px 0;">BS in Teacher Education</p>
+        </div>
+      </div>
+
+      <!-- Accountancy & Business -->
+      <div class="prog-card reveal" style="border-top:3px solid #ca8a04;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="width:36px;height:36px;background:rgba(202,138,4,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <span class="prog-icon-abbr" style="background:rgba(202,138,4,0.1);color:#ca8a04;border-color:rgba(202,138,4,0.3);">CAB</span>
+        </div>
+        <h4>College of Accountancy &amp; Business</h4>
+        <div style="display:flex;flex-direction:column;gap:3px;margin-top:8px;">
+          <p style="font-size:12px;margin:0;padding:3px 0;border-bottom:1px solid var(--gray-200);">BS Accountancy</p>
+          <p style="font-size:12px;margin:0;padding:3px 0;border-bottom:1px solid var(--gray-200);">BS Business Administration</p>
+          <p style="font-size:12px;margin:0;padding:3px 0;border-bottom:1px solid var(--gray-200);">BS Marketing Management</p>
+          <p style="font-size:12px;margin:0;padding:3px 0;border-bottom:1px solid var(--gray-200);">BS Entrepreneurship</p>
+          <p style="font-size:12px;margin:0;padding:3px 0;">BS Management Accounting</p>
+        </div>
+      </div>
+
+      <!-- Hospitality & Tourism -->
+      <div class="prog-card reveal" style="border-top:3px solid #0d9488;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="width:36px;height:36px;background:rgba(13,148,136,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+          </div>
+          <span class="prog-icon-abbr" style="background:rgba(13,148,136,0.1);color:#0d9488;border-color:rgba(13,148,136,0.3);">CHTM</span>
+        </div>
+        <h4>College of Hospitality &amp; Tourism</h4>
+        <div style="display:flex;flex-direction:column;gap:3px;margin-top:8px;">
+          <p style="font-size:12px;margin:0;padding:3px 0;border-bottom:1px solid var(--gray-200);">BS Hospitality Management</p>
+          <p style="font-size:12px;margin:0;padding:3px 0;">BS Tourism Management</p>
+        </div>
+      </div>
+
+      <!-- Criminal Justice -->
+      <div class="prog-card reveal" style="border-top:3px solid #dc2626;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="width:36px;height:36px;background:rgba(220,38,38,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <span class="prog-icon-abbr" style="background:rgba(220,38,38,0.1);color:#dc2626;border-color:rgba(220,38,38,0.3);">CCJE</span>
+        </div>
+        <h4>College of Criminal Justice Education</h4>
+        <div style="display:flex;flex-direction:column;gap:3px;margin-top:8px;">
+          <p style="font-size:12px;margin:0;padding:3px 0;">BS Criminology</p>
+        </div>
+      </div>
+
+      <!-- Computer Studies -->
+      <div class="prog-card reveal" style="border-top:3px solid #16a34a;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="width:36px;height:36px;background:rgba(22,163,74,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <span class="prog-icon-abbr" style="background:rgba(22,163,74,0.1);color:#16a34a;border-color:rgba(22,163,74,0.3);">CCS</span>
+        </div>
+        <h4>College of Computer Studies</h4>
+        <div style="display:flex;flex-direction:column;gap:3px;margin-top:8px;">
+          <p style="font-size:12px;margin:0;padding:3px 0;border-bottom:1px solid var(--gray-200);">BS Computer Science</p>
+          <p style="font-size:12px;margin:0;padding:3px 0;border-bottom:1px solid var(--gray-200);">BS Computer Technology</p>
+          <p style="font-size:12px;margin:0;padding:3px 0;border-bottom:1px solid var(--gray-200);">BS Information Technology</p>
+          <p style="font-size:12px;margin:0;padding:3px 0;">BS Information System</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ VALUES / STATS ════════════════════════════════ -->
+<section id="values" style="position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+    <div style="position:absolute;width:700px;height:700px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.08);top:-200px;left:-150px;animation:slowRotate 65s linear infinite reverse;"></div>
+    <div style="position:absolute;width:500px;height:500px;border-radius:50%;border:1px solid rgba(255,255,255,0.06);bottom:-100px;right:-100px;"></div>
+    <div style="position:absolute;width:350px;height:350px;border-radius:50%;border:1px solid rgba(255,255,255,0.05);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+    <div style="position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(168,85,247,0.15) 0%,transparent 70%);top:-150px;right:-100px;"></div>
+    <div style="position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(212,160,23,0.10) 0%,transparent 70%);bottom:-80px;left:5%;"></div>
+  </div>
+  <div class="section-inner" style="position:relative;z-index:1;">
+    <span class="section-tag reveal">Core Values</span>
+    <h2 class="section-title reveal">The PhilCST Way</h2>
+    <p class="section-sub reveal">Seven values that define the character and commitment of every PhilCST graduate.</p>
+    <div class="values-grid" style="grid-template-columns:repeat(7,1fr);gap:16px;margin-top:48px;">
+      <div class="value-item reveal">
+        <div class="value-num">P</div>
+        <div class="value-label">Professionalism</div>
+      </div>
+      <div class="value-item reveal">
+        <div class="value-num">H</div>
+        <div class="value-label">High Spirituality</div>
+      </div>
+      <div class="value-item reveal">
+        <div class="value-num">I</div>
+        <div class="value-label">Integrity</div>
+      </div>
+      <div class="value-item reveal">
+        <div class="value-num">L</div>
+        <div class="value-label">Love of Humanity</div>
+      </div>
+      <div class="value-item reveal">
+        <div class="value-num">C</div>
+        <div class="value-label">Compassionate &amp; Competitive</div>
+      </div>
+      <div class="value-item reveal">
+        <div class="value-num">S</div>
+        <div class="value-label">Solidarity</div>
+      </div>
+      <div class="value-item reveal">
+        <div class="value-num">T</div>
+        <div class="value-label">Transformative</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:48px;padding-top:40px;border-top:1px solid rgba(255,255,255,0.12);" class="reveal">
+      <div class="value-item">
+        <div class="value-num" data-count="30" style="font-size:36px;">0</div>
+        <div class="value-label">Years of Excellence</div>
+      </div>
+      <div class="value-item">
+        <div class="value-num" data-count="12000" style="font-size:36px;">0</div>
+        <div class="value-label">Alumni Produced</div>
+      </div>
+      <div class="value-item">
+        <div class="value-num" data-count="20" style="font-size:36px;">0</div>
+        <div class="value-label">Programs Available</div>
+      </div>
+      <div class="value-item">
+        <div class="value-num" data-count="7" style="font-size:36px;">0</div>
+        <div class="value-label">Colleges</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ACCREDITATIONS ══════════════════════════════ -->
+<section id="accreditations" style="position:relative;overflow:hidden;background: linear-gradient(135deg, #ede5ff 0%, hsl(267, 46%, 91%) 40%, #ece8ff 70%, #faf5ff 100%);padding:80px 24px;">
+  <!-- decorative circle lines matching hero style -->
+  <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+    <div style="position:absolute;width:700px;height:700px;border-radius:50%;border:1.5px solid rgba(107,33,168,0.10);top:-200px;right:-150px;animation:slowRotate 60s linear infinite;"></div>
+    <div style="position:absolute;width:500px;height:500px;border-radius:50%;border:1px solid rgba(107,33,168,0.07);bottom:-100px;left:-100px;"></div>
+    <div style="position:absolute;width:350px;height:350px;border-radius:50%;border:1px solid rgba(107,33,168,0.06);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+    <div style="position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(168,85,247,0.10) 0%,rgba(107,33,168,0.04) 45%,transparent 70%);top:-120px;right:-100px;"></div>
+    <div style="position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(212,160,23,0.06) 0%,transparent 70%);bottom:-80px;left:5%;"></div>
+  </div>
+  <div class="section-inner" style="position:relative;z-index:1;max-width:1100px;margin:0 auto;text-align:center;">
+    <span class="section-tag reveal">Recognized By</span>
+    <h2 class="section-title reveal">Accreditations &amp; Partners</h2>
+      <p class="section-mid reveal">PhilCST is recognized and accredited by leading national and international organizations.</p>
+
+    <!-- WURI — featured top center, big -->
+    <div style="display:flex;justify-content:center;margin:40px 0 48px;" class="reveal">
+      <img src="img/WURI.png" alt="WURI — World University Rankings for Innovation"
+           style="height:90px;object-fit:contain;mix-blend-mode:multiply;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.08));">
+    </div>
+
+    <!-- Other logos row -->
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:40px 60px;" class="reveal">
+      <!-- SOCOTEC — white bg PNG, multiply removes it -->
+      <img src="img/socotec-vector-logo.png" alt="SOCOTEC"
+           style="height:72px;object-fit:contain;mix-blend-mode:multiply;">
+
+      <!-- MARINA — JPG with white bg, multiply blends it away -->
+      <img src="img/Marina_logo.jpg" alt="MARINA"
+           style="height:72px;object-fit:contain;mix-blend-mode:multiply;">
+
+      <!-- PACU-COA — white bg PNG -->
+      <img src="img/footerlinkages5272019201.png" alt="PACU-COA"
+           style="height:72px;object-fit:contain;mix-blend-mode:multiply;">
+
+      <!-- TESDA — dark/black bg PNG: wrap in a white rounded pill so it looks clean -->
+      
+        <img src="img/deped-tesda-logos-03_2x.png" alt="TESDA"
+             style="height:56px;object-fit:contain;mix-blend-mode:multiply;">
+
+      <!-- DepED — black bg PNG: same white pill treatment -->
+        <img src="img/DepED.png" alt="DepEd"
+             style="height:56px;object-fit:contain;mix-blend-mode:multiply;">
+    
+
+      <!-- CHED — multiply to remove white bg -->
+      <img src="img/CHED.png" alt="CHED"
+           style="height:72px;object-fit:contain;mix-blend-mode:multiply;">
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ════════════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="data:image/png;base64,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" alt="PhilCST Logo" />
+        <h3>Philippine College of Science and Technology</h3>
+        <p>Nalsian, Calasiao, Pangasinan — committed to quality education and the development of globally competitive graduates since 1994.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#">About PhilCST</a></li>
+          <li><a href="#">Academics</a></li>
+          <li><a href="#">Campus Life</a></li>
+          <li><a href="#">Research</a></li>
+          <li><a href="https://lms.philcst.edu.ph" target="_blank">LMS</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Student Services</h4>
+        <ul>
+          <li><a href="https://osgvs.philcst.edu.ph" target="_blank">Grades Viewing</a></li>
+          <li><a href="https://opac-philcst.online" target="_blank">Library OPAC</a></li>
+          <li><a href="#">Student Affairs</a></li>
+          <li><a href="#">Career Services</a></li>
+          <li><a href="app.html" onclick="sessionStorage.setItem('philcst_from_landing','1')">Attendance System</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 PhilCST. All rights reserved.</span>
+      <span>Powered by <span class="mis">MIS</span></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── SCROLL REVEAL ─────────────────────────────────────────
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ── COUNT-UP ANIMATION ────────────────────────────────────
+  const countEls = document.querySelectorAll('[data-count]');
+  const countObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = parseInt(el.dataset.count);
+      const duration = 1800;
+      const start = performance.now();
+      function update(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const value = Math.round(eased * target);
+        el.textContent = target >= 1000 ? (value >= 1000 ? Math.round(value/1000) + 'k+' : value) : value + (progress < 1 ? '' : (target === 30 || target === 20 ? '+' : ''));
+        if (progress < 1) requestAnimationFrame(update);
+        else el.textContent = target >= 1000 ? Math.round(target/1000) + 'k+' : target + (target === 5 ? '' : '+');
+      }
+      requestAnimationFrame(update);
+      countObserver.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+  countEls.forEach(el => countObserver.observe(el));
+</script>
+</body>
+</html>
