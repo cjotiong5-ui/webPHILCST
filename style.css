@@ -1,0 +1,191 @@
+/*
+ * style.css — PhilCST Attendance System
+ * External stylesheet — all media queries live in index.html <style>
+ * This file keeps only non-conflicting utility overrides.
+ */
+
+/* Scrollable tables on all screens */
+.table-scroll-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  min-width: 520px;
+}
+
+/* Ensure inputs don't overflow containers */
+input, select, textarea, button {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Sidebar Hover Logic */
+.sidebar {
+    position: fixed;
+    left: -240px; /* Tago muna siya */
+    top: 0;
+    height: 100vh;
+    width: 260px;
+    background: var(--panel);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 999;
+    padding-left: 20px;
+}
+
+/* Pag tinapat yung mouse sa left side ng screen */
+.sidebar-trigger {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 15px; /* Manipis lang na area para sa hover */
+    height: 100vh;
+    z-index: 1000;
+}
+
+.sidebar-trigger:hover + .sidebar, .sidebar:hover {
+    left: 0; /* Lalabas na siya */
+}
+
+/* Responsive Fixes */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow-x: hidden; /* Iwas scrollbar sa ilalim */
+}
+
+/* Loading/No Signal Animation */
+#loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 12, 26, 0.95);
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.signal-icon {
+    width: 60px;
+    height: 60px;
+    border: 4px solid var(--purple-light);
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.glitch-text {
+    color: var(--purple-light);
+    font-family: 'Space Mono', monospace;
+    margin-top: 20px;
+    letter-spacing: 2px;
+}
+
+:root {
+  --philcst-purple: #6b21a8;
+  --philcst-gold: #d4a017;
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Source Sans 3', sans-serif;
+}
+
+/* ── SIDEBAR AUTO-HIDE LOGIC ── */
+.sidebar {
+  position: fixed;
+  left: -250px; /* Tago muna */
+  top: 0;
+  width: 280px;
+  height: 100vh;
+  background: white;
+  box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+  transition: all 0.3s ease-in-out;
+  z-index: 1000;
+  border-right: 4px solid var(--philcst-gold);
+}
+
+/* Area sa gilid na pwedeng i-hover para lumabas sidebar */
+.sidebar-trigger {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 100vh;
+  z-index: 1001;
+}
+
+.sidebar-trigger:hover + .sidebar, .sidebar:hover {
+  left: 0;
+}
+
+/* ── RESPONSIVE ELEMENTS ── */
+.hero-section {
+  display: flex;
+  flex-wrap: wrap; /* Para 'di mag-compress pag maliit screen */
+  gap: 20px;
+  padding: 50px 5%;
+  align-items: center;
+}
+
+.hero-content {
+  flex: 1;
+  min-width: 300px; /* Proteksyon sa compression */
+}
+
+.hero-image img {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 10px;
+}
+
+/* ── LOADING ANIMATION (POOR SIGNAL VIBE) ── */
+#loader {
+  position: fixed;
+  inset: 0;
+  background: white;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.signal-bar {
+  display: flex;
+  gap: 5px;
+  align-items: flex-end;
+  height: 30px;
+}
+
+.bar {
+  width: 8px;
+  background: #ddd;
+  border-radius: 2px;
+}
+
+.bar-anim {
+  animation: signal-blink 1s infinite alternate;
+}
+
+@keyframes signal-blink {
+  0% { background: #ddd; }
+  100% { background: var(--philcst-purple); }
+}
+
+#loader {
+  position: fixed;
+  inset: 0;
+  background: white; /* O kahit anong color gusto mo */
+  z-index: 9999;
+  display: flex; /* Eto dapat */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  visibility: visible;
+}
